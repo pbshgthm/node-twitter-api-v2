@@ -18,6 +18,7 @@ declare abstract class TweetTimelineV2Paginator<TResult extends Tweetv2TimelineR
      * Tweets returned by paginator.
      */
     get tweets(): TweetV2[];
+    get includes(): import("../types").ApiV2Includes | undefined;
 }
 export declare class TweetSearchRecentV2Paginator extends TweetTimelineV2Paginator<Tweetv2SearchResult, Tweetv2SearchParams> {
     protected _endpoint: string;

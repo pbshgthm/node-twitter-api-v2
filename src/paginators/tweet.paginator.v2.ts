@@ -19,17 +19,18 @@ abstract class TweetTimelineV2Paginator<
   protected refreshInstanceFromResult(response: TwitterResponse<TResult>, isNextPage: boolean) {
     const result = response.data;
     this._rateLimit = response.rateLimit!;
-
-    if (isNextPage) {
-      this._realData.meta.oldest_id = result.meta.oldest_id;
-      this._realData.meta.result_count += result.meta.result_count;
-      this._realData.meta.next_token = result.meta.next_token;
-      this._realData.data.push(...result.data);
-    }
-    else {
-      this._realData.meta.newest_id = result.meta.newest_id;
-      this._realData.meta.result_count += result.meta.result_count;
-      this._realData.data.unshift(...result.data);
+    if (result.data) {
+      if (isNextPage) {
+        this._realData.meta.oldest_id = result.meta.oldest_id
+        this._realData.meta.result_count += result.meta.result_count
+        this._realData.meta.next_token = result.meta.next_token
+        this._realData.data.push(...result.data)
+      }
+      else {
+        this._realData.meta.newest_id = result.meta.newest_id
+        this._realData.meta.result_count += result.meta.result_count
+        this._realData.data.unshift(...result.data)
+      }
     }
   }
 
@@ -50,13 +51,13 @@ abstract class TweetTimelineV2Paginator<
   }
 
   protected getPageLengthFromRequest(result: TwitterResponse<TResult>) {
-    return result.data.data.length;
+    return result.data?.data?.length || 0;
   }
 
   protected isFetchLastOver(result: TwitterResponse<TResult>) {
-    return !result.data.data.length || !result.data.meta.next_token;
+    return !result.data?.data?.length || !result.data.meta.next_token;
   }
-
+  
   protected getItemArray() {
     return this.tweets;
   }
@@ -66,6 +67,9 @@ abstract class TweetTimelineV2Paginator<
    */
   get tweets() {
     return this._realData.data;
+  }
+  get includes() {
+    return this._realData.includes
   }
 }
 

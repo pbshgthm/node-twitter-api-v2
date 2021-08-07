@@ -7,16 +7,18 @@ class TweetTimelineV2Paginator extends TwitterPaginator_1.PreviousableTwitterPag
     refreshInstanceFromResult(response, isNextPage) {
         const result = response.data;
         this._rateLimit = response.rateLimit;
-        if (isNextPage) {
-            this._realData.meta.oldest_id = result.meta.oldest_id;
-            this._realData.meta.result_count += result.meta.result_count;
-            this._realData.meta.next_token = result.meta.next_token;
-            this._realData.data.push(...result.data);
-        }
-        else {
-            this._realData.meta.newest_id = result.meta.newest_id;
-            this._realData.meta.result_count += result.meta.result_count;
-            this._realData.data.unshift(...result.data);
+        if (result.data) {
+            if (isNextPage) {
+                this._realData.meta.oldest_id = result.meta.oldest_id;
+                this._realData.meta.result_count += result.meta.result_count;
+                this._realData.meta.next_token = result.meta.next_token;
+                this._realData.data.push(...result.data);
+            }
+            else {
+                this._realData.meta.newest_id = result.meta.newest_id;
+                this._realData.meta.result_count += result.meta.result_count;
+                this._realData.data.unshift(...result.data);
+            }
         }
     }
     getNextQueryParams(maxResults) {
@@ -34,10 +36,12 @@ class TweetTimelineV2Paginator extends TwitterPaginator_1.PreviousableTwitterPag
         };
     }
     getPageLengthFromRequest(result) {
-        return result.data.data.length;
+        var _a, _b;
+        return ((_b = (_a = result.data) === null || _a === void 0 ? void 0 : _a.data) === null || _b === void 0 ? void 0 : _b.length) || 0;
     }
     isFetchLastOver(result) {
-        return !result.data.data.length || !result.data.meta.next_token;
+        var _a, _b;
+        return !((_b = (_a = result.data) === null || _a === void 0 ? void 0 : _a.data) === null || _b === void 0 ? void 0 : _b.length) || !result.data.meta.next_token;
     }
     getItemArray() {
         return this.tweets;
@@ -47,6 +51,9 @@ class TweetTimelineV2Paginator extends TwitterPaginator_1.PreviousableTwitterPag
      */
     get tweets() {
         return this._realData.data;
+    }
+    get includes() {
+        return this._realData.includes;
     }
 }
 // ----------------
